@@ -1,4 +1,3 @@
-
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -61,9 +60,13 @@ int readf(FILE *fp)
 	}
 	/*read s1 s2 from the file*/
 	s1=fgets(s1, MAX, fp);
+	s1[strcspn(s1, "\n")] = '\0';
 	s2=fgets(s2, MAX, fp);
-	n1=strlen(s1) - 1; /*length of s1*/
+	s2[strcspn(s2, "\n")] = '\0';
+	
+	n1=strlen(s1); /*length of s1*/
 	n2=strlen(s2); /*length of s2*/
+	
 	nlocal=n1/NUM_THREADS;  /*data length held by process*/
 	if(s1==NULL || s2==NULL ||n1<n2)  /*when error exit*/
 		return -1;
@@ -83,7 +86,7 @@ void *sub_string(void *threadid) 	/*each process searches in the string with the
 	
 	for (i = start_index; i < end_index; i++){   
 		count=0;
-		for(j = i,k = 0; k <= n2; j++,k++){  /*search for the next string of size of n2*/  
+		for(j = i,k = 0; k < n2; j++,k++){  /*search for the next string of size of n2*/  
 			if (j > (n1 - 1) || *(s1+j)!=*(s2+k)){
 				break;
 				//abcded
